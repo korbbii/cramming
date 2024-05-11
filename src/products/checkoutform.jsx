@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faShoppingCart, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import Swiftcart from './swiftcart.png';
 
 function Checkoutform(props) {
+  const [cartCount, setCartCount] = useState(0);
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpText, setPopUpText] = useState('');
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const location = useLocation(); 
   const product = location.state.product; 
-  console.log(product);
+
+  const updateCartCount = (count) => {
+    localStorage.setItem('cartCount', count);
+    setCartCount(count);
+  };
+
+  useEffect(() => {
+    const storedCount = localStorage.getItem('cartCount');
+    if (storedCount) {
+      setCartCount(parseInt(storedCount));
+    }
+  }, []);
 
   const handleMouseEnter = (event, text) => {
     setPopUpText(text);
@@ -27,11 +39,19 @@ function Checkoutform(props) {
     setCursorPosition({ x: event.clientX, y: event.clientY });
   };
 
+  const addToCart = () => {
+    const newCount = cartCount + 1;
+    updateCartCount(newCount);
+    const storedProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
+    storedProducts.push(product);
+    localStorage.setItem('cartProducts', JSON.stringify(storedProducts));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="fixed top-0 left-0 w-full bg-white text-black py-4 sm:py-6 flex justify-between items-center shadow-lg z-10" onMouseMove={handleMouseMove}>
+      <nav className="fixed top-0 left-0 w-full bg-white text-black -py-4 sm:py-10 flex justify-between items-center shadow-lg z-10" onMouseMove={handleMouseMove}>
         <div className="flex items-center">
-          <Link to="/" className="text-4xl font-bold font-poppins ml-4 sm:ml-40">
+          <Link to="/" className="text-4xl font-bold font-Poppins lg:ml-64 sm:ml-40 md:mr-24 md:ml-24">
             {window.innerWidth < 640 && <img src={Swiftcart} alt="SwiftCart" className="w-40 h-50" />}
             {window.innerWidth >= 640 && <span>SwiftCart</span>}
           </Link>
@@ -56,7 +76,7 @@ function Checkoutform(props) {
             onMouseLeave={handleMouseLeave}>
             {window.innerWidth >= 640 ? (
               <>
-                Cart
+                Cart ({cartCount})
                 <FontAwesomeIcon icon={faShoppingCart} className="ml-2 text-black-500" />
               </>
             ) : (
@@ -103,7 +123,7 @@ function Checkoutform(props) {
       <div className="container mx-auto mt-16 px-4">
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
-            <img src={product.image} alt={product.name} className="w-full ml-40 mt-28 h-auto object-cover" style={{ maxWidth: '250px', maxHeight: '350px' }} />
+            <img src={product.image} alt={product.name} className="w-full ml-40 mt-40 h-auto object-cover" style={{ maxWidth: '250px', maxHeight: '350px'}} />
           </div>
           <div className="w-full lg:w-1/2 lg:pl-8">
             {product && (
@@ -113,7 +133,7 @@ function Checkoutform(props) {
                 <p className="text-xl font-bold mb-4">{product.price}</p>
                 <p className="text-xl font-bold mb-4">{product.rating}</p>
                 <div className="flex">
-                  <button className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md mr-4">
+                  <button className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md mr-4" onClick={addToCart}>
                     <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
                     Add to Cart
                   </button>

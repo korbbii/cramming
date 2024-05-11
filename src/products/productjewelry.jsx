@@ -85,7 +85,7 @@ function Productjewelry() {
     <div>
       <div className="fixed top-0 left-0 w-full bg-white text-black -py-4 sm:py-10 flex justify-between items-center shadow-lg z-10" onMouseMove={handleMouseMove}>
         <div className="flex items-center">
-          <Link to="/" className="text-4xl font-bold font-poppins ml-4 sm:ml-40">
+          <Link to="/" className="text-4xl font-bold font-Poppins lg:ml-64 sm:ml-40 md:mr-24 md:ml-24">
             <img src={window.innerWidth < 640 ? Swiftcart : null} alt="SwiftCart" className={window.innerWidth < 640 ? 'w-40 h-50' : 'hidden'} />
             <span className={window.innerWidth >= 640 ? '' : 'hidden'}>SwiftCart</span>
           </Link>
